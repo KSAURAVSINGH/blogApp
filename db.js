@@ -8,4 +8,13 @@ const pool = mysql.createPool({
     connectionLimit: 10,
     queueLimit: 0
 });
-module.exports = { pool };
+const pool1 = mysql.createPool({
+    host: 'localhost',
+    user: 'root',
+    password: 'Raunak@1234',
+    database: 'sql_bench',
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0
+});
+module.exports = { pool, pool1 };
