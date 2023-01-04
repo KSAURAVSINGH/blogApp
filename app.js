@@ -14,11 +14,19 @@ app.get("/", (req, res) => {
 app.post("/register", (req, res) => {
     let email = req.body.email;
     let passcode = req.body.passcode;
-
-    let sql = `INSERT INTO users (userID, passcode) VALUES (?, ?);`;
-    pool1.query(sql, [email, passcode], function(err, rows){
+    let sql = `SELECT * FROM users where userID = ?;`;
+    pool1.query(sql, email, function(err, rows){
         if(err) throw err;
-        res.send("Success");
+        let len = rows.length;
+        if(len == 0){
+            sql = `INSERT INTO users (userID, passcode) VALUES (?, ?);`;
+            pool1.query(sql, [email, passcode], function(err, rows){
+                if(err) throw err;
+                res.send("Success");
+            })
+        }else{
+            res.send("User exists");
+        }
     })
 })
 
@@ -31,7 +39,11 @@ app.post("/login", (req, res) => {
         if(err) throw err;
         let len = rows.length;
         if(len == 1 && rows[0].passcode == password){
-            console.log("log in");
+            sql = `SELECT * FROM blogs where userID = ?;`;
+            pool1.query(sql, email, function(err, rows){
+                if(err) throw err;
+                res.send(rows);
+            })
         }else{
             console.log("wrong");
         }
